@@ -9,12 +9,16 @@ import os
 import sys
 import argparse
 from pathlib import Path
+import fitz  # PyMuPDF
 
-def main():
-    parser = argparse.ArgumentParser(description="Candidate Contact Extractor")
-    parser.add_argument("--folder", type=str, default=None)
-    args = parser.parse_args()
-    print("[*] Ziara TalentX initialized.")
-
-if __name__ == "__main__":
-    main()
+def extract_text_from_pdf(pdf_path: Path) -> str:
+    """Extract text from native PDF."""
+    text = ""
+    try:
+        doc = fitz.open(pdf_path)
+        for page in doc:
+            text += page.get_text() + "\n"
+        doc.close()
+    except Exception as e:
+        print(f"[!] Error reading {pdf_path}: {e}")
+    return text
