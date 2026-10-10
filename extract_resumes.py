@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-import re
+import phonenumbers
 from typing import List
 
-EMAIL_REGEX = re.compile(
-    r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+',
-    re.IGNORECASE
-)
-
-def extract_emails(text: str) -> List[str]:
-    raw_emails = EMAIL_REGEX.findall(text)
-    cleaned = []
-    for em in raw_emails:
-        em = em.strip(".,;:()<>[]'\"").lower()
-        if em and em not in cleaned:
-            cleaned.append(em)
-    return cleaned
+def extract_phone_numbers(text: str, default_region: str = "IN") -> List[str]:
+    phones = []
+    try:
+        for match in phonenumbers.PhoneNumberMatcher(text, default_region):
+            formatted = phonenumbers.format_number(
+                match.number, phonenumbers.PhoneNumberFormat.INTERNATIONAL
+            )
+            if formatted not in phones:
+                phones.append(formatted)
+    except Exception:
+        pass
+    return phones
