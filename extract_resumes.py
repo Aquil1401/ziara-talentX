@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
-BLACKLIST_EMAIL_DOMAINS = {
-    'springer.com', 'ieee.org', 'nature.com', 'elsevier.com',
-    'sciencedirect.com', 'wiley.com', 'acm.org', 'researchgate.net',
-    'arxiv.org', 'tandfonline.com', 'oup.com', 'mdpi.com'
-}
+from typing import List, Dict
 
-BLACKLIST_PREFIXES = {
-    'editor', 'editorial', 'info', 'support', 'contact', 'admin',
-    'queries', 'hod', 'principal', 'office', 'admissions'
-}
-
-def is_blacklisted(email: str) -> bool:
-    local_part, domain = email.split('@')[0].lower(), email.split('@')[1].lower()
-    if domain in BLACKLIST_EMAIL_DOMAINS:
-        return True
-    if any(local_part.startswith(p) for p in BLACKLIST_PREFIXES):
-        return True
-    return False
+def select_best_contacts(emails: List[str], phones: List[str], candidate_name: str) -> Dict[str, str]:
+    primary_email = emails[0] if emails else "N/A"
+    alt_emails = "; ".join(emails[1:]) if len(emails) > 1 else "None"
+    primary_phone = phones[0] if phones else "N/A"
+    alt_phones = "; ".join(phones[1:]) if len(phones) > 1 else "None"
+    return {
+        "Primary Email": primary_email,
+        "Alternative Emails": alt_emails,
+        "Primary Phone": primary_phone,
+        "Alternative Phone": alt_phones
+    }
