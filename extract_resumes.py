@@ -7,6 +7,9 @@ Extracts candidate information (Folder Name, Email, Contact Number, File Info)
 and exports to CSV & Excel with smart verification scoring.
 """
 
+__version__ = "1.0.0"
+__author__ = "Md Aquil"
+
 import os
 import sys
 import re
