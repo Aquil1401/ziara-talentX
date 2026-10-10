@@ -30,6 +30,10 @@ Developed by **[Ziara TechQ Labs](https://www.ziaratechqlabs.in/)**, we provide 
 
 ## ⚡ Quick Start: How to Run
 
+<p align="center">
+  <img src="assets/demo.gif" alt="Ziara TalentX Terminal Execution Demo" width="92%">
+</p>
+
 No coding experience is required. Choose whichever method is easiest:
 
 ### Option 1: Drag & Drop (Recommended ⭐)
