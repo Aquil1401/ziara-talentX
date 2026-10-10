@@ -52,3 +52,5 @@ Organizations, agencies, and software developers wishing to deploy Ziara TalentX
 1. **"As-Is" Provision (Zero Warranty):** This software is distributed under the PolyForm Noncommercial License 1.0.0 completely free of any warranty or guarantee of any kind, whether express, statutory, or implied, including fitness for a particular purpose or accuracy of data extraction.
 2. **No Liability for OCR / Extraction Accuracy:** While this tool utilizes advanced pattern matching and Optical Character Recognition, accuracy depends on the quality, format, and structure of input documents. The author/contributors assume no liability for extraction discrepancies, missed records, or data loss.
 3. **Indemnification:** The author (Md Aquil) and Ziara TechQ Labs are not liable for any claims, penalties, fines, or damages resulting from unlawful use or data security breaches occurring on the user's machines.
+
+<!-- Policy Version: 1.0.0 | Effective: 2026 -->
