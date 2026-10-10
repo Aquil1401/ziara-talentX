@@ -7,18 +7,20 @@ Organization: Ziara TechQ Labs (https://www.ziaratechqlabs.in/)
 
 import os
 import sys
-import argparse
 from pathlib import Path
-import fitz  # PyMuPDF
+import fitz
 
-def extract_text_from_pdf(pdf_path: Path) -> str:
-    """Extract text from native PDF."""
-    text = ""
+try:
+    import docx
+    DOCX_AVAILABLE = True
+except ImportError:
+    DOCX_AVAILABLE = False
+
+def extract_text_from_docx(docx_path: Path) -> str:
+    if not DOCX_AVAILABLE:
+        return ""
     try:
-        doc = fitz.open(pdf_path)
-        for page in doc:
-            text += page.get_text() + "\n"
-        doc.close()
-    except Exception as e:
-        print(f"[!] Error reading {pdf_path}: {e}")
-    return text
+        doc = docx.Document(docx_path)
+        return "\n".join([p.text for p in doc.paragraphs if p.text.strip()])
+    except Exception:
+        return ""
