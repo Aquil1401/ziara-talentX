@@ -44,6 +44,14 @@ No coding experience is required. Choose whichever method is easiest:
 
 ---
 
+
+
+### 🏗️ Extraction Architecture:
+1. **Directory Traversal** ➔ Recursively detects candidate folders.
+2. **Text & OCR Pipeline** ➔ Native PyMuPDF + RapidOCR fallback.
+3. **Scoring & Verification Engine** ➔ Name-token matching + domain filtering.
+4. **Export Engine** ➔ Generates formatted Excel (with visual review flags) & CSV.
+
 ## 📊 Output Spreadsheet Structure
 
 Two structured files are generated upon completion:
