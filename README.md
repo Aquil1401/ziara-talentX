@@ -9,6 +9,7 @@
 [![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm%20Noncommercial-blue.svg)](LICENSE)
 [![Organization: Ziara TechQ Labs](https://img.shields.io/badge/Organization-Ziara%20TechQ%20Labs-orange.svg)](https://www.ziaratechqlabs.in/)
 [![Author: Md Aquil](https://img.shields.io/badge/Author-Md%20Aquil%20(Aquil1401)-purple.svg)](https://github.com/Aquil1401)
+[![Sponsor: Aquil1401](https://img.shields.io/badge/Sponsor-%E2%9D%A4%EF%B8%8F%20Aquil1401-ff69b4.svg)](https://github.com/sponsors/Aquil1401)
 [![Email: ziaratechqlabs@gmail.com](https://img.shields.io/badge/Inquiries-ziaratechqlabs%40gmail.com-red.svg)](mailto:ziaratechqlabs@gmail.com)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
 [![Architecture: Offline / Local Processing](https://img.shields.io/badge/Architecture-Offline%20%26%20Local%20Processing-blue.svg)]()
@@ -115,6 +116,19 @@ python extract_resumes.py --create-sample
 
 * **License:** This project is licensed under the **PolyForm Noncommercial License 1.0.0**. You may freely use, inspect, and modify this software for **personal, research, and non-commercial purposes**. Commercial use, hosting as a paid SaaS, or reselling is strictly prohibited without a commercial license. See [LICENSE](LICENSE).
 * **Compliance & Ethics:** Please adhere to data privacy laws (DPDP Act 2023, GDPR, CCPA). Read [LEGAL.md](LEGAL.md).
+
+---
+
+
+---
+
+## 💖 Support & Sponsor
+
+If **Ziara TalentX** saved your recruitment or HR team countless hours of manual data entry, consider supporting the author:
+
+[![Sponsor Md Aquil on GitHub](https://img.shields.io/badge/Sponsor_Me-GitHub_Sponsors-ea4aaa?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sponsors/Aquil1401)
+
+Your sponsorship helps fund ongoing maintenance, new format parsers, and open-source recruitment utilities!
 
 ---
 
