@@ -1,4 +1,6 @@
 @echo off
+:: Ziara TalentX - One-Click Launcher
+:: Developed by Ziara TechQ Labs (Md Aquil)
 title Ziara TalentX - Automated CV Contact Extractor
 cls
 
