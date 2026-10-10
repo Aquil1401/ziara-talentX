@@ -1,0 +1,45 @@
+# Real and Sample Candidate Data Directories (Never commit candidate data!)
+candidate_sample/
+candidate_sample-*/
+Sample/
+Sample-*/
+sample/
+real_data/
+candidates/
+Applicants/
+Resumes/
+resumes/
+
+# Candidate Document Files (Double Privacy Protection)
+*.pdf
+*.docx
+*.doc
+
+# Generated Output Spreadsheets
+*.csv
+*.xlsx
+*.xls
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Private Commercial Agreement & Invoice Templates (Internal Only)
+private/
+*COMMERCIAL_AGREEMENT*
+*INVOICE*
+COMMERCIAL_AGREEMENT_TEMPLATE.md
