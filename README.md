@@ -1,3 +1,5 @@
+![Ziara TalentX Banner](assets/banner.png)
+
 # 🚀 Ziara TalentX
 
 > **Automated Candidate Contact Extraction & Intelligence Engine for Recruiters, HR Teams & Institutions.**  
