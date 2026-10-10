@@ -1,26 +1,28 @@
 #!/usr/bin/env python3
-"""
-Ziara TalentX - Candidate Contact Extractor
-Author: Md Aquil (https://github.com/Aquil1401)
-Organization: Ziara TechQ Labs (https://www.ziaratechqlabs.in/)
-"""
-
 import os
-import sys
 from pathlib import Path
 import fitz
 
+OCR_AVAILABLE = False
 try:
-    import docx
-    DOCX_AVAILABLE = True
+    from rapidocr_onnxruntime import RapidOCR
+    ocr_engine = RapidOCR()
+    OCR_AVAILABLE = True
 except ImportError:
-    DOCX_AVAILABLE = False
+    ocr_engine = None
 
-def extract_text_from_docx(docx_path: Path) -> str:
-    if not DOCX_AVAILABLE:
+def ocr_pdf(pdf_path: Path, max_pages: int = 3) -> str:
+    if not OCR_AVAILABLE or not ocr_engine:
         return ""
-    try:
-        doc = docx.Document(docx_path)
-        return "\n".join([p.text for p in doc.paragraphs if p.text.strip()])
-    except Exception:
-        return ""
+    text = []
+    doc = fitz.open(pdf_path)
+    for i, page in enumerate(doc):
+        if i >= max_pages:
+            break
+        pix = page.get_pixmap(dpi=120)
+        img_bytes = pix.tobytes("png")
+        result, _ = ocr_engine(img_bytes)
+        if result:
+            text.extend([line[1] for line in result])
+    doc.close()
+    return "\n".join(text)
