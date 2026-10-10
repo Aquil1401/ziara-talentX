@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
-import re
-from typing import List, Tuple
+BLACKLIST_EMAIL_DOMAINS = {
+    'springer.com', 'ieee.org', 'nature.com', 'elsevier.com',
+    'sciencedirect.com', 'wiley.com', 'acm.org', 'researchgate.net',
+    'arxiv.org', 'tandfonline.com', 'oup.com', 'mdpi.com'
+}
 
-def score_email(email: str, candidate_folder_name: str, text: str) -> int:
-    score = 0
-    name_tokens = [t.lower() for t in re.split(r'[-_\s.]+', candidate_folder_name) if len(t) >= 3 and not t.isdigit()]
-    email_local = email.split('@')[0].lower()
-    for token in name_tokens:
-        if token in email_local:
-            score += 120
-    return score
+BLACKLIST_PREFIXES = {
+    'editor', 'editorial', 'info', 'support', 'contact', 'admin',
+    'queries', 'hod', 'principal', 'office', 'admissions'
+}
+
+def is_blacklisted(email: str) -> bool:
+    local_part, domain = email.split('@')[0].lower(), email.split('@')[1].lower()
+    if domain in BLACKLIST_EMAIL_DOMAINS:
+        return True
+    if any(local_part.startswith(p) for p in BLACKLIST_PREFIXES):
+        return True
+    return False
