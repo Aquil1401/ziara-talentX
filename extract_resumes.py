@@ -1,28 +1,17 @@
 #!/usr/bin/env python3
-import os
-from pathlib import Path
-import fitz
+import re
+from typing import List
 
-OCR_AVAILABLE = False
-try:
-    from rapidocr_onnxruntime import RapidOCR
-    ocr_engine = RapidOCR()
-    OCR_AVAILABLE = True
-except ImportError:
-    ocr_engine = None
+EMAIL_REGEX = re.compile(
+    r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+',
+    re.IGNORECASE
+)
 
-def ocr_pdf(pdf_path: Path, max_pages: int = 3) -> str:
-    if not OCR_AVAILABLE or not ocr_engine:
-        return ""
-    text = []
-    doc = fitz.open(pdf_path)
-    for i, page in enumerate(doc):
-        if i >= max_pages:
-            break
-        pix = page.get_pixmap(dpi=120)
-        img_bytes = pix.tobytes("png")
-        result, _ = ocr_engine(img_bytes)
-        if result:
-            text.extend([line[1] for line in result])
-    doc.close()
-    return "\n".join(text)
+def extract_emails(text: str) -> List[str]:
+    raw_emails = EMAIL_REGEX.findall(text)
+    cleaned = []
+    for em in raw_emails:
+        em = em.strip(".,;:()<>[]'\"").lower()
+        if em and em not in cleaned:
+            cleaned.append(em)
+    return cleaned
