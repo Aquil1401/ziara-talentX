@@ -29,6 +29,10 @@ Developed by **[Ziara TechQ Labs](https://www.ziaratechqlabs.in/)**, we provide 
 
 ---
 
+### 🌟 Core Capabilities
+* 📂 **Dual-Mode Hybrid Architecture:** Seamlessly processes **both nested candidate subfolders** (`Folder/Candidate_Name/CV.pdf`) AND **flat directories of loose resumes** (`Folder/Resume_1.pdf, Resume_2.docx`) without manual sorting.
+* ⚡ **Smart Progressive Deep-Scan:** Page-by-page scanning with intelligent early exit as soon as verified contacts are found; automatically deep-scans multi-page CVs up to `--max-pages` so no contact details are missed.
+
 ## ⚡ Quick Start: How to Run
 
 <p align="center">
@@ -58,6 +62,22 @@ No coding experience is required. Choose whichever method is easiest:
 2. **Text & OCR Pipeline** ➔ Native PyMuPDF + RapidOCR fallback.
 3. **Scoring & Verification Engine** ➔ Name-token matching + domain filtering.
 4. **Export Engine** ➔ Generates formatted Excel (with visual review flags) & CSV.
+
+
+### ⚙️ Command-Line Options:
+```bash
+# Standard run (auto-detects candidates)
+python extract_resumes.py
+
+# Specify custom folder (works for nested subfolders OR flat resume files)
+python extract_resumes.py --folder "C:\Recruitment\Resumes"
+
+# Deep-scan multi-page academic CVs (e.g. up to 10 pages, or 0 for full document)
+python extract_resumes.py --max-pages 10
+
+# Generate local synthetic demo candidates
+python extract_resumes.py --create-sample
+```
 
 ## 📊 Output Spreadsheet Structure
 

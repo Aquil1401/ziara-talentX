@@ -295,11 +295,13 @@ def extract_candidate_phones(text: str) -> Tuple[str, str, bool]:
     return primary_phone, secondary_str, has_multiple
 
 
-def extract_text_from_pdf(pdf_path: Path) -> Tuple[str, bool]:
+def extract_text_from_pdf(pdf_path: Path, max_pages: int = 5) -> Tuple[str, bool]:
     """
-    Extracts text from PDF.
-    First tries native text extraction via PyMuPDF.
-    If empty or very short (< 50 chars), falls back to RapidOCR with early stopping.
+    Smart Progressive Deep-Scan:
+    1. Page-by-page native PyMuPDF text scan.
+       - If BOTH email and phone are found on early pages, instantly breaks for maximum speed.
+       - If not found on page 1-2, continues deep-scanning up to max_pages (or full document).
+    2. Falls back to RapidOCR for scanned image PDFs with early stopping.
     Returns (extracted_text, is_ocr_used).
     """
     extracted_text = ""
@@ -308,43 +310,44 @@ def extract_text_from_pdf(pdf_path: Path) -> Tuple[str, bool]:
     try:
         doc = fitz.open(str(pdf_path))
         num_pages = len(doc)
-        
-        # 1. Fast Native text extraction (Page 1 and 2 cover 99.9% of resume headers)
+        limit = min(num_pages, max_pages) if max_pages > 0 else num_pages
+
+        # 1. Progressive Native text extraction
         native_text_parts = []
-        for i in range(min(num_pages, 2)):
+        for i in range(limit):
             txt = doc[i].get_text().strip()
             if txt:
                 native_text_parts.append(txt)
-                # Check if we already have emails and phones
+                # Smart Early Break: If we already found BOTH email and phone, stop scanning further pages
                 combined_sample = "\n".join(native_text_parts)
                 if EMAIL_REGEX.search(combined_sample) and (LABEL_PHONE_REGEX.search(combined_sample) or INTL_PHONE_REGEX.search(combined_sample)):
                     break
-        
+
         extracted_text = "\n".join(native_text_parts)
 
-        # 2. Only if native text is completely missing/empty, fallback to OCR
+        # 2. Only if native text is completely missing/scanned (< 30 chars), fallback to OCR
         if len(extracted_text.strip()) < 30:
             if OCR_AVAILABLE and rapid_ocr is not None:
                 is_ocr = True
                 ocr_text_parts = []
-                # Check first 2 pages maximum
-                for i in range(min(num_pages, 2)):
+                # Scan up to min(limit, 4) pages for scanned documents with early break
+                ocr_limit = min(num_pages, min(limit, 4))
+                for i in range(ocr_limit):
                     page = doc[i]
-                    # dpi=120  # Optimized for speed and accuracy is optimal balance: 40% faster inference with perfect readability
                     pix = page.get_pixmap(dpi=120)  # Optimized for speed and accuracy
                     img_bytes = pix.tobytes("png")
                     result, _ = rapid_ocr(img_bytes)
                     if result:
                         page_text = "\n".join([line[1] for line in result])
                         ocr_text_parts.append(page_text)
-                        
+
                         # Early break: If current page yielded email OR phone, stop OCR
                         current_all = "\n".join(ocr_text_parts)
                         if EMAIL_REGEX.search(current_all) or LABEL_PHONE_REGEX.search(current_all):
                             break
-                            
+
                 extracted_text = "\n".join(ocr_text_parts)
-        
+
         doc.close()
     except Exception as e:
         print(f"    [!] Error reading PDF {pdf_path.name}: {e}", flush=True)
@@ -452,27 +455,52 @@ def find_cv_in_folder(candidate_path: Path) -> Optional[Path]:
     return None
 
 
-def process_candidates(sample_dir: Path) -> List[Dict]:
+def process_candidates(sample_dir: Path, max_pages: int = 5) -> List[Dict]:
     """
-    Processes all candidate folders under sample_dir.
-    Candidate name is set STRICTLY to the Candidate Folder Name.
+    Dual-Mode Hybrid Candidate Processor:
+    1. Nested Folders Mode: Processes candidate subdirectories (Candidate Name = Folder Name).
+    2. Flat Direct Files Mode: Processes direct loose resumes in sample_dir (Candidate Name = File Name).
+    3. Mixed Mode: Seamlessly processes both subfolders and loose files in a single pass.
     """
     results = []
-    
-    # Identify candidate folders directly under sample_dir
-    candidate_folders = [d for d in sample_dir.iterdir() if d.is_dir() and not d.name.startswith('.')]
-    candidate_folders.sort(key=lambda d: d.name.lower())
 
-    print(f"\n[+] Total Candidate Folders Found: {len(candidate_folders)}", flush=True)
+    # 1. Identify candidate subfolders
+    ignored_dir_names = {'.', '__', 'venv', 'env', 'private', 'assets', 'scratch', 'build', 'dist', '__pycache__'}
+    subfolders = [
+        d for d in sample_dir.iterdir()
+        if d.is_dir() and not any(d.name.startswith(p) for p in ignored_dir_names)
+    ]
+    subfolders.sort(key=lambda d: d.name.lower())
+
+    # 2. Identify direct loose resume files (for flat folder structures)
+    resume_extensions = {'.pdf', '.docx', '.doc'}
+    direct_resumes = [
+        f for f in sample_dir.iterdir()
+        if f.is_file() and f.suffix.lower() in resume_extensions and not f.name.startswith(('.', '~', '$'))
+    ]
+    direct_resumes.sort(key=lambda f: f.name.lower())
+
+    # Build unified queue of candidate items: (type, identifier, path_or_cv_file)
+    queue = []
+    for d in subfolders:
+        queue.append(("folder", d.name, d))
+    for f in direct_resumes:
+        # For direct files, use filename stem as candidate identifier
+        queue.append(("file", f.stem, f))
+
+    print(f"\n[+] Total Candidates Detected: {len(queue)} ({len(subfolders)} subfolders, {len(direct_resumes)} direct files)", flush=True)
+    print(f"[+] Progressive Scan Depth: {'Full Document' if max_pages == 0 else f'Up to {max_pages} pages'}", flush=True)
     print(f"[+] OCR Engine Active: {'YES (RapidOCR - ONNX Runtime)' if OCR_AVAILABLE else 'NO'}", flush=True)
     print("=" * 70, flush=True)
 
-    for idx, folder in enumerate(candidate_folders, 1):
-        # Candidate Name is STRICTLY the folder name
-        candidate_name = folder.name
-        print(f"\n[{idx}/{len(candidate_folders)}] Processing: {candidate_name}", flush=True)
+    for idx, (kind, identifier, target_path) in enumerate(queue, 1):
+        candidate_name = identifier
+        print(f"\n[{idx}/{len(queue)}] Processing: {candidate_name} ({'Subfolder' if kind == 'folder' else 'Direct File'})", flush=True)
 
-        cv_file = find_cv_in_folder(folder)
+        if kind == "folder":
+            cv_file = find_cv_in_folder(target_path)
+        else:
+            cv_file = target_path
 
         if not cv_file:
             print("    [-] Status: CV File Not Found / Blank", flush=True)
@@ -489,12 +517,12 @@ def process_candidates(sample_dir: Path) -> List[Dict]:
             continue
 
         print(f"    [OK] CV Found: {cv_file.name}", flush=True)
-        
+
         # Extract text based on file type
         text = ""
         is_ocr = False
         if cv_file.suffix.lower() == '.pdf':
-            text, is_ocr = extract_text_from_pdf(cv_file)
+            text, is_ocr = extract_text_from_pdf(cv_file, max_pages=max_pages)
         elif cv_file.suffix.lower() == '.docx':
             text = extract_text_from_docx(cv_file)
             is_ocr = False
@@ -692,23 +720,25 @@ def auto_detect_candidates_dir(given_path: Optional[str] = None) -> Path:
         if p.exists() and p.is_dir():
             return p
 
-    # 2. Scan subdirectories in current folder
+    # 2. Scan subdirectories in current folder (for both nested and direct flat resume folders)
     current_dir = Path(".")
-    subdirs = [d for d in current_dir.iterdir() if d.is_dir() and not d.name.startswith(('.', '__', 'venv', 'env', 'private'))]
-    
+    subdirs = [d for d in current_dir.iterdir() if d.is_dir() and not d.name.startswith(('.', '__', 'venv', 'env', 'private', 'assets'))]
+
+    # Check if any subdir has candidate subfolders OR direct resumes
     for d in subdirs:
-        # Check if this folder has candidate subdirectories
+        # Check for nested subdirectories with resumes
         child_dirs = [c for c in d.iterdir() if c.is_dir() and not c.name.startswith('.')]
         for c in child_dirs[:5]:
             for _, _, files in os.walk(c):
                 if any(f.lower().endswith(('.pdf', '.docx', '.doc')) for f in files):
                     return d
+        # Check for direct loose resume files in this folder
+        if any(f.is_file() and f.suffix.lower() in ['.pdf', '.docx', '.doc'] for f in d.iterdir()):
+            return d
 
-    # 3. Check if current directory itself contains candidate subdirectories
-    for d in subdirs:
-        for _, _, files in os.walk(d):
-            if any(f.lower().endswith(('.pdf', '.docx', '.doc')) for f in files):
-                return current_dir
+    # 3. Check if current directory itself contains direct resume files or candidate subdirectories
+    if any(f.is_file() and f.suffix.lower() in ['.pdf', '.docx', '.doc'] for f in current_dir.iterdir()):
+        return current_dir
 
     # 4. If no candidate directories found at all, auto-generate synthetic demo sample
     print("[*] No candidate folders found in workspace.", flush=True)
@@ -722,7 +752,13 @@ def main():
         "--folder",
         type=str,
         default=None,
-        help="Path to the folder containing candidate folders (optional, auto-detects by default)"
+        help="Path to the folder containing candidate folders or loose resumes (optional, auto-detects)"
+    )
+    parser.add_argument(
+        "--max-pages",
+        type=int,
+        default=5,
+        help="Maximum pages to scan per resume before early exit (default: 5, use 0 for all pages)"
     )
     parser.add_argument(
         "--create-sample",
@@ -739,7 +775,7 @@ def main():
 
     if args.create_sample:
         p = create_sample_candidates_dir()
-        print(f"[✓] Created demo sample candidates in: {p.resolve()}")
+        print(f"[OK] Created demo sample candidates in: {p.resolve()}")
         return
 
     target_dir = auto_detect_candidates_dir(args.folder)
@@ -753,7 +789,7 @@ def main():
     print("=" * 70)
     print(f"Target Directory: {target_dir.resolve()}")
 
-    results = process_candidates(target_dir)
+    results = process_candidates(target_dir, max_pages=args.max_pages)
 
     if not results:
         print("[!] No candidate folders found.")
