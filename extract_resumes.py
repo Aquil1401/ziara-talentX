@@ -331,7 +331,7 @@ def extract_text_from_pdf(pdf_path: Path) -> Tuple[str, bool]:
                 for i in range(min(num_pages, 2)):
                     page = doc[i]
                     # dpi=120  # Optimized for speed and accuracy is optimal balance: 40% faster inference with perfect readability
-                    pix = page.get_pixmap(dpi=120  # Optimized for speed and accuracy)
+                    pix = page.get_pixmap(dpi=120)  # Optimized for speed and accuracy
                     img_bytes = pix.tobytes("png")
                     result, _ = rapid_ocr(img_bytes)
                     if result:
