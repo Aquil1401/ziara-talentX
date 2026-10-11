@@ -1,0 +1,66 @@
+name: 🐛 Bug Report
+description: Create a report to help us improve and fix issues in Ziara TalentX
+title: "[BUG]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report an issue!
+        **WARNING:** Never share or paste real candidate resumes or personal information. Use synthetic dummy examples only.
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe what happened...
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS
+        - Ubuntu / Linux
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: python-version
+    attributes:
+      label: Python Version
+      placeholder: e.g., Python 3.12.4
+    validations:
+      required: true
+  - type: dropdown
+    id: document-type
+    attributes:
+      label: Document Format Encountered
+      options:
+        - Native PDF (Text-selectable)
+        - Scanned PDF (Image/Photo)
+        - Microsoft Word (.docx)
+        - Microsoft Word (.doc)
+        - Mixed Folder Structure
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this behavior?
+      placeholder: |
+        1. Run 'run.bat' with folder '...'
+        2. Inspect output spreadsheet
+        3. See error...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Terminal Output / Error Logs
+      description: Paste any error traceback or console logs here.
+      render: shell

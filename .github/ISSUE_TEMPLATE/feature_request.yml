@@ -1,0 +1,30 @@
+name: 💡 Feature Request
+description: Suggest an idea or enhancement for Ziara TalentX
+title: "[FEATURE]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Suggesting a new feature? We'd love to hear your ideas to make recruitment parsing faster and more powerful!
+  - type: textarea
+    id: problem
+    attributes:
+      label: Is your feature request related to a problem?
+      description: A clear description of the hiring workflow or limitation you are experiencing.
+      placeholder: I find it frustrating when...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the Solution You'd Like
+      description: A clear description of what you want to happen.
+      placeholder: It would be great if TalentX could extract...
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context or Alternatives
+      description: Any other context, mockup screenshots, or alternative approaches considered.
