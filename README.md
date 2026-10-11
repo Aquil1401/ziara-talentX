@@ -169,3 +169,10 @@ For commercial licensing grants, agency deployments, custom ATS integrations, or
 1. Send an email to **`ziaratechqlabs@gmail.com`** stating your business requirements and usage scale.
 2. Ziara TechQ Labs will issue a formal **Commercial License Grant & Invoice**.
 3. Upon approval, your organization receives full commercial rights to deploy and customize Ziara TalentX.
+
+---
+
+## 🔍 Search Keywords & Technical Index
+
+This repository is optimized for recruiters, HR developers, and open-source contributors searching for:
+`resume-parser` • `cv-extractor` • `bulk-resume-to-excel` • `python-resume-parser` • `recruitment-automation` • `hr-tech` • `applicant-tracking-system` • `offline-ocr-extractor` • `extract-email-phone-from-pdf` • `pymupdf-parser` • `rapidocr-onnx` • `candidate-screening` • `talent-acquisition-tool` • `batch-cv-processing` • `scanned-resume-ocr` • `dpdp-compliant-recruitment` • `ziara-techq-labs`
