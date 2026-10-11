@@ -697,6 +697,20 @@ def create_sample_candidates_dir(sample_dir_path: Path = Path("candidate_sample"
                 doc.save(str(fpath))
                 doc.close()
 
+    # Also create direct loose resume files to demonstrate flat/mixed folder capability
+    direct_samples = [
+        ("David_Miller_Cloud_Architect.pdf", "David Miller\nEmail: david.miller@example.com\nPhone: +1 206-555-0188\nSeattle, WA\n\nLead Cloud Solutions Architect with 8+ years designing scalable AWS and Kubernetes infrastructures."),
+        ("Sara_Tanaka_AI_Engineer.pdf", "Sara Tanaka\nContact:\nEmail: sara.tanaka@example.jp\nMobile: +81 90-1234-5678\nTokyo, Japan\n\nSenior AI/ML Engineer specializing in Computer Vision and PyTorch models.")
+    ]
+    for fname, text in direct_samples:
+        fpath = sample_dir_path / fname
+        if not fpath.exists():
+            doc = fitz.open()
+            page = doc.new_page()
+            page.insert_text(fitz.Point(50, 72), text, fontsize=12)
+            doc.save(str(fpath))
+            doc.close()
+
     return sample_dir_path
 
 

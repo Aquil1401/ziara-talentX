@@ -121,9 +121,14 @@ If running on a new PC for the first time:
 This repository is designed with privacy best practices in mind:
 * 📁 **Pre-configured .gitignore:** Common candidate directories (`candidate_sample/`, `candidates/`, `Sample/`) and document files (`*.pdf`, `*.docx`) are listed in `.gitignore` to help prevent unintentional local file commits to Git repositories.
 * ⚡ **Auto Demo Creation:** If no candidate files are found when running, Ziara TalentX generates local synthetic demo candidates in `candidate_sample/` for an immediate test drive:
+  **Nested Subfolder Candidates:**
   - **Alex-Morgan_1001** (US format with Resume & Statement of Purpose)
   - **Rajesh-Sharma_1002** (Indian format with CV & Course Certificate)
   - **Elena-Rostova_1003** (UK format with Curriculum Vitae & Publications List)
+  
+  **Direct Loose Resumes (Flat / Mixed Directory Test):**
+  - **David_Miller_Cloud_Architect.pdf** (US Cloud Architect direct file)
+  - **Sara_Tanaka_AI_Engineer.pdf** (Japan AI Engineer direct file)
 
 To manually create demo test data at any time:
 ```bash
