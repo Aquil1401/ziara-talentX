@@ -6,6 +6,7 @@
 > Built & Maintained by [Md Aquil](https://github.com/Aquil1401) at [Ziara TechQ Labs](https://www.ziaratechqlabs.in/).  
 > Extract verified candidate emails & global phone numbers from nested folders directly into clean Excel & CSV spreadsheets. Scanned PDF & OCR ready.
 
+[![CI Pipeline](https://github.com/Aquil1401/ziara-talentX/actions/workflows/ci.yml/badge.svg)](https://github.com/Aquil1401/ziara-talentX/actions)
 [![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm%20Noncommercial-blue.svg)](LICENSE)
 [![Organization: Ziara TechQ Labs](https://img.shields.io/badge/Organization-Ziara%20TechQ%20Labs-orange.svg)](https://www.ziaratechqlabs.in/)
 [![Author: Md Aquil](https://img.shields.io/badge/Author-Md%20Aquil%20(Aquil1401)-purple.svg)](https://github.com/Aquil1401)
